@@ -3,7 +3,7 @@
 
 # IFS06 - TELEMETRY
 
-Repositorio para el departamento de Telemetry del IFS06 de la temporada 2022/2023.
+Repositorio para el departamento de Telemetry del IFS06 de la temporada 2023/2024.
 
 ## Primeros pasos:
 1. Crea una cuenta en GitHub si aún no tienes una.
