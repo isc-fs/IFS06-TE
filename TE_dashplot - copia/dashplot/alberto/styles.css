@@ -1,0 +1,36 @@
+body {
+    background-color: #000; /* Black background color */
+    color: #fff; /* White text color */
+}
+
+.dash-dropdown,
+.rc-slider-dot,
+.rc-slider-dot-active,
+.rc-slider-handle,
+.rc-slider-rail,
+.rc-slider-track {
+    background-color: #111; /* Darker background color */
+    border-color: #111; /* Darker border color */
+}
+
+.dash-checklist,
+.dash-checklist label {
+    color: #fff;
+}
+
+.dash-checklist input:checked + span::before {
+    border-color: #fff;
+    background-color: #fff;
+}
+
+.dash-cytoscape-stylesheet {
+    line-color: #fff;
+}
+
+.dash-cytoscape-edge-ghost,
+.dash-cytoscape-edge-line,
+.dash-cytoscape-edge-target-arrow {
+    line-color: #fff;
+    source-arrow-color: #fff;
+    target-arrow-color: #fff;
+}
