@@ -87,4 +87,4 @@ if _name_ == "_main_":
     except:
         traceback.print_exc()
         nrf.power_down()
-        pi.stop()
+        pi.stop()
