@@ -108,6 +108,21 @@ void loop() {
   }
 }
 
+void executeFunction(int functionNumber) {
+  switch (functionNumber) {
+    case 1:
+      // Execute function 1.
+      break;
+    case 2:
+      // Execute function 2.
+      break;
+    // ... (resto de los casos) ...
+    default:
+      // Unknown function number.
+      break;
+  }
+}
+
 void send_reading(byte protocol, float temperature, float humidity)
 {
   Serial.print("Bytes packed: ");
