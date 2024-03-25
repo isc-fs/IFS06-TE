@@ -12,8 +12,8 @@
 
 //#define PIN_DHT                  2            // PIN for DHT sensor communication.
 
-#define PIN_RF24_CSN             9            // CSN PIN for RF24 module.
-#define PIN_RF24_CE             10            // CE PIN for RF24 module.
+#define PIN_RF24_CSN             10            // CSN PIN for RF24 module.
+#define PIN_RF24_CE             9            // CE PIN for RF24 module.
 
 #define NRF24_CHANNEL          100            // 0 ... 125
 #define NRF24_CRC_LENGTH         RF24_CRC_16  // RF24_CRC_DISABLED, RF24_CRC_8, RF24_CRC_16 for 16-bit
