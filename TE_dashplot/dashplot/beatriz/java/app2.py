@@ -21,14 +21,29 @@ from datetime import datetime
 def read_data_simulation():
     # Simulate temperature and humidity values
     id= 1
-    temperature = random.uniform(20.0, 30.0)  # Random float between 20.0 and 30.0
-    humidity = random.uniform(30.0, 60.0)  # Random float between 30.0 and 60.0
+    temperature = random.uniform(2.0, 3.0)  # Random float between 20.0 and 30.0
+    humidity = random.uniform(3.0, 6.0)  # Random float between 30.0 and 60.0
+    pressure = random.uniform(3.0, 6.0)
+    dc_bus_voltage = random.uniform(3.0, 6.0)
+    i_actual = random.uniform(3.0, 6.0)
+    igbt_temp = random.uniform(3.0, 6.0)
+    inverter_temp = random.uniform(3.0, 6.0)
+    motor_temp = random.uniform(3.0, 6.0)
+    n_actual = random.uniform(3.0, 6.0)
+    ax = random.uniform(3.0, 6.0)
+    ay = random.uniform(3.0, 6.0)
+    az = random.uniform(3.0, 6.0)
+    brake = random.uniform(3.0, 6.0)
+    throttle = random.uniform(3.0, 6.0)
+    inverter_temp = random.uniform(3.0, 6.0)
+    suspension_fr = random.uniform(3.0, 6.0)
+    suspension_fl = random.uniform(3.0, 6.0)
+    suspension_rr = random.uniform(3.0, 6.0)
+    suspension_rl = random.uniform(3.0, 6.0)
 
-    return {
-        'id': id,
-        'temperature': temperature,
-        'humidity': humidity
-    }
+
+
+    return id, temperature, humidity, pressure, dc_bus_voltage, i_actual, igbt_temp, inverter_temp, motor_temp, n_actual, ax, ay, az, brake, throttle, inverter_temp, suspension_fr, suspension_fl, suspension_rr, suspension_rl
 
 #FUNCTION TO INITIALIZE THE NRF24L01 - ONLY TO BE RUN ONCE 
 def initialize():
@@ -36,18 +51,6 @@ def initialize():
     hostname = 'localhost'
     port = 8888
     address = '1SNSR'
-    '''
-    parser = argparse.ArgumentParser(prog="simple-receiver.py", description="Simple NRF24 Receiver Example.")
-    parser.add_argument('-n', '--hostname', type=str, default='localhost', help="Hostname for the Raspberry running the pigpio daemon.")
-    parser.add_argument('-p', '--port', type=int, default=8888, help="Port number of the pigpio daemon.")
-    parser.add_argument('address', type=str, nargs='?', default='1SNSR', help="Address to listen to (3 to 5 ASCII characters)")
-
-    args = parser.parse_args()
-    hostname = args.hostname
-    port = args.port
-    address = args.address
-    print(address)
-    '''
 
     # Verify that address is between 3 and 5 characters.
     if not (2 < len(address) < 6):
@@ -85,7 +88,7 @@ def read_data(nrf, address):
             # Count message and record time of reception.            
             count += 1
             now = datetime.now()
-            #print(now)
+
             # Read pipe and payload for message.
             pipe = nrf.data_pipe()
             payload = nrf.get_payload()
@@ -98,11 +101,9 @@ def read_data(nrf, address):
                 dataid = values[0]
                 temperature = values[1]
                 humidity = values[2]
-                #print(f'dataid {dataid}')
-                #print(f'temperature {temperature}')
-                #print(f'humidity {humidity}')
+
                 # Return the data as a tuple
-                return (dataid, temperature, humidity)
+                return (dataid, temperature, humidity) #TUPLA
 
     except:
         traceback.print_exc()
@@ -113,25 +114,44 @@ def read_data(nrf, address):
     return None
 
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*") 
 
 #!!!!! Uncomment la linea cuando esté la raspberry conectada. 
 
 import time 
+import math
 
 def read_loop():
-    nrf, address = initialize()
-
+    #nrf, address = initialize() !! uncomment this line when the raspberry is connected
     while True:
-        data = read_data(nrf, address)# data = read_data_simulation() #!!!! Aquí debería ir read_data(nrf, address) cuando tengamos la raspberry conectada
+        data = read_data_simulation()#!!!! Aquí debería ir read_data(nrf, address) cuando tengamos la raspberry conectada
+        print(data)
         if data is not None:
-            print(data)
-            dataid, temperature, humidity = data
-            print(type(temperature))
-            #dataid = data['id']
-            #temperature = data['temperature']
-            #humidity = data['humidity']
-            socketio.emit('newdata', {'dataid': dataid, 'temperature': temperature, 'humidity': humidity})
+            #get element 0 of the tuple data 
+            dataid = data[0]
+            temperature = data[1]
+            humidity = data[2]
+            pressure = data[3]
+            dc_bus_voltage = data[4]
+            i_actual = data[5]
+            igbt_temp = data[6]
+            inverter_temp = data[7]
+            motor_temp = data[8]
+            n_actual = data[9]
+            ax = data[10]
+            ay = data[11]
+            az = data[12]
+            brake = data[13]
+            throttle = data[14]
+            laquefalta = data[15]
+            suspension_FR= data[16]
+            suspension_FL = data[17]
+            suspension_RR = data[18]
+            suspension_RL = data[19]
+
+            #print(type(temperature))
+            
+            socketio.emit('newdata', {'dataid': dataid, 'temperature': temperature, 'humidity': humidity, 'pressure': pressure, 'dc_bus_voltage': dc_bus_voltage, 'i_actual': i_actual, 'igbt_temp': igbt_temp, 'laquefalta': laquefalta, 'motor_temp': motor_temp, 'n_actual': n_actual, 'ax': ax, 'ay': ay, 'az': az, 'brake': brake, 'throttle': throttle, 'inverter_temp': inverter_temp, 'suspension_FR': suspension_FR, 'suspension_FL': suspension_FL, 'suspension_RR': suspension_RR, 'suspension_RL': suspension_RL})
         time.sleep(2)
 
 #Ruta principal   
@@ -146,4 +166,4 @@ def test_connect():
 
 # Inicia el servidor
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, port=5000, host='localhost')
