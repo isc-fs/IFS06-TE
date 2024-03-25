@@ -8,13 +8,14 @@ import traceback
 import pigpio
 from nrf24 import *
 
-
-#
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Funciona con simple_sender_ino.ino
+# %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # A simple NRF24L receiver that connects to a PIGPIO instance on a hostname and port, default "localhost" and 8888, and
 # starts receiving data on the address specified.  Use the companion program "simple-sender.py" to send data to it from
 # a different Raspberry Pi.
 #
-if _name_ == "_main_":
+if __name__ == "__main__":
 
     print("Python NRF24 Simple Receiver Example.")
     

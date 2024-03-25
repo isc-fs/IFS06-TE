@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime
+import random
 import struct
 import sys
 import time
@@ -8,13 +9,12 @@ import traceback
 import pigpio
 from nrf24 import *
 
-
 #
 # A simple NRF24L receiver that connects to a PIGPIO instance on a hostname and port, default "localhost" and 8888, and
 # starts receiving data on the address specified.  Use the companion program "simple-sender.py" to send data to it from
 # a different Raspberry Pi.
 #
-if _name_ == "_main_":
+if __name__ == "__main__":
 
     print("Python NRF24 Simple Receiver Example.")
     
@@ -62,6 +62,7 @@ if _name_ == "_main_":
             while nrf.data_ready():
                 # Count message and record time of reception.            
                 count += 1
+                #print(count)
                 now = datetime.now()
                 
                 # Read pipe and payload for message.
@@ -84,7 +85,8 @@ if _name_ == "_main_":
 
                 # Send ACK payload with function number.
                 functionNumber = random.randint(1, 10)  # Replace this with the actual logic to determine the function number.
-                nrf.send_ack_payload([functionNumber])
+                nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', functionNumber))
+                print(functionNumber)
                 
             # Sleep 100 ms.
             time.sleep(0.1)
