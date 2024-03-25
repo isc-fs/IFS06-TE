@@ -30,3 +30,10 @@ Using python we convert this data and store it in influx.
         1. Solicita al usuario que introduzca el nombre de un piloto y un circuito utilizando la función rundata().
         2. Crea un nuevo bucket en la base de datos InfluxDB con la función createbucket(), utilizando el nombre del piloto y del circuito como parte del nombre del bucket.
         3. Recibe datos del coche de carreras con la función rxnrf24() y los almacena en la base de datos InfluxDB.
+
+
+### Extra
+
+https://github.com/bjarne-hansen/py-nrf24/blob/master/test/ack-receiver.py
+
+De aqui sacamos los ejemplos utilizados con la libreria NRF24

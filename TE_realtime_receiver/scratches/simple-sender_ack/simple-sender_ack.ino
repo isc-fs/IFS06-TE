@@ -146,7 +146,10 @@ void nrf24_setup()
 {
   radio.begin();
   radio.enableDynamicPayloads();
-  radio.setAutoAck(true);
+  
+  //radio.setAutoAck(true);
+  radio.enableAckPayload();
+
   radio.setPALevel(NRF24_PA_LEVEL);
   radio.setRetries(NRF24_RETRY_DELAY, NRF24_RETRY_COUNT);
   radio.setDataRate(NRF24_DATA_RATE);

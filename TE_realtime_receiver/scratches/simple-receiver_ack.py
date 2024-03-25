@@ -14,7 +14,7 @@ from nrf24 import *
 # starts receiving data on the address specified.  Use the companion program "simple-sender.py" to send data to it from
 # a different Raspberry Pi.
 #
-if _name_ == "_main_":
+if __name__ == "__main__":
 
     print("Python NRF24 Simple Receiver Example.")
     
@@ -52,6 +52,14 @@ if _name_ == "_main_":
     # Display the content of NRF24L01 device registers.
     nrf.show_registers()
 
+    '''
+    No se hasta que punto puede hacer falta esto
+
+        # Set the UUID that will be the payload of the next acknowledgement.
+        next_id = 11
+        nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', next_id))
+    '''
+
     # Enter a loop receiving data on the address specified.
     try:
         print(f'Receive from {address}')
@@ -84,7 +92,7 @@ if _name_ == "_main_":
 
                 # Send ACK payload with function number.
                 functionNumber = random.randint(1, 10)  # Replace this with the actual logic to determine the function number.
-                nrf.send_ack_payload([functionNumber])
+                nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', functionNumber))
                 
             # Sleep 100 ms.
             time.sleep(0.1)
