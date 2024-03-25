@@ -52,6 +52,14 @@ if __name__ == "__main__":
     # Display the content of NRF24L01 device registers.
     nrf.show_registers()
 
+    '''
+    No se hasta que punto puede hacer falta esto
+
+        # Set the UUID that will be the payload of the next acknowledgement.
+        next_id = 11
+        nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', next_id))
+    '''
+
     # Enter a loop receiving data on the address specified.
     try:
         print(f'Receive from {address}')
