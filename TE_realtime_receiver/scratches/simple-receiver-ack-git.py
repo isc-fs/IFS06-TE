@@ -6,6 +6,8 @@ import time
 import traceback
 from uuid import uuid4
 
+import random
+
 import pigpio
 from nrf24 import *
 
@@ -86,8 +88,12 @@ if __name__ == "__main__":
                     print(f'Protocol: {values[0]}, temperature: {values[1]}, humidity: {values[2]}')
                     
                     # Set uuid that will be part of the next acknowledgement.
-                    next_id += 1
-                    nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', next_id))
+                    #next_id += 1
+                    # Send ACK payload with function number.
+                    functionNumber = random.randint(1, 10)  # Replace this with the actual logic to determine the function number.
+                    nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', functionNumber))
+                    print(functionNumber)
+                    #nrf.ack_payload(RF24_RX_ADDR.P1, struct.pack('<I', next_id))
                 
             # Sleep 1 ms.
             time.sleep(0.001)
