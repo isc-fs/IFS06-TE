@@ -17,6 +17,10 @@ import pigpio
 from datetime import datetime
 #Estas funciones deberían estar en un archivo aparte, pero me da error . 
 
+'''
+Funciona al menos con los datos simulados, abrir http://localhost:5000/
+'''
+
 #Esta se inventa datos. 
 def read_data_simulation():
     # Simulate temperature and humidity values
@@ -122,9 +126,9 @@ import time
 import math
 
 def read_loop():
-    #nrf, address = initialize() !! uncomment this line when the raspberry is connected
+    nrf, address = initialize() # !! uncomment this line when the raspberry is connected
     while True:
-        data = read_data_simulation()#!!!! Aquí debería ir read_data(nrf, address) cuando tengamos la raspberry conectada
+        data = read_data(nrf, address) # read_data_simulation() !!!! Aquí debería ir read_data(nrf, address) cuando tengamos la raspberry conectada
         print(data)
         if data is not None:
             #get element 0 of the tuple data 
