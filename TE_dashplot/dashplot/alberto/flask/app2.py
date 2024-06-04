@@ -21,33 +21,62 @@ from datetime import datetime
 Funciona al menos con los datos simulados, abrir http://localhost:5000/
 '''
 
-#Esta se inventa datos. 
+# Clase para simular la llegada de paquetes con distintos dataids de forma uniforme y secuencial
+class DataIDIterator:
+    def __init__(self, values):
+        self.values = values
+        self.index = 0
+
+    def get_next(self):
+        value = self.values[self.index]
+        self.index = (self.index + 1) % len(self.values)
+        return value
+
+# Lista de valores
+values = [0x600, 0x610, 0x630, 0x640, 0x650, 0x660, 0x670, 0x680]
+
+# Crear instancia del iterador
+dataid_iterator = DataIDIterator(values)
+
+#Funcion para simular datos (sin uso de arduino)
 def read_data_simulation():
-    # Simulate temperature and humidity values
-    id= 1
-    temperature = random.uniform(2.0, 3.0)  # Random float between 20.0 and 30.0
-    humidity = random.uniform(3.0, 6.0)  # Random float between 30.0 and 60.0
-    pressure = random.uniform(3.0, 6.0)
-    dc_bus_voltage = random.uniform(3.0, 6.0)
-    i_actual = random.uniform(3.0, 6.0)
-    igbt_temp = random.uniform(3.0, 6.0)
-    inverter_temp = random.uniform(3.0, 6.0)
-    motor_temp = random.uniform(3.0, 6.0)
-    n_actual = random.uniform(3.0, 6.0)
-    ax = random.uniform(3.0, 6.0)
-    ay = random.uniform(3.0, 6.0)
-    az = random.uniform(3.0, 6.0)
-    brake = random.uniform(3.0, 6.0)
-    throttle = random.uniform(3.0, 6.0)
-    inverter_temp = random.uniform(3.0, 6.0)
-    suspension_fr = random.uniform(3.0, 6.0)
-    suspension_fl = random.uniform(3.0, 6.0)
-    suspension_rr = random.uniform(3.0, 6.0)
-    suspension_rl = random.uniform(3.0, 6.0)
 
+    # Obtener el siguiente valor secuencialmente:
+    dataid = dataid_iterator.get_next()
 
+    # Forma para hacerlo aleatoriamente:
+    # dataid = random.choice([0x600, 0x610, 0x630, 0x640, 0x650, 0x660, 0x670, 0x680])
 
-    return id, temperature, humidity, pressure, dc_bus_voltage, i_actual, igbt_temp, inverter_temp, motor_temp, n_actual, ax, ay, az, brake, throttle, inverter_temp, suspension_fr, suspension_fl, suspension_rr, suspension_rl
+    if dataid == 0x610 : #IMU REAR
+        values = [random.randint(0, 100) for _ in range(7)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2), round(values[5],2), round(values[6],2))
+    elif dataid == 0x600 : #MOTOR INVERSOR
+        values = [random.randint(0, 100) for _ in range(8)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2), round(values[5],2), round(values[6],2), values[7])  
+    elif dataid == 0x630 : #PEDALS
+        values = [random.randint(0, 100) for _ in range(3)]   
+        return (dataid, round(values[1],2), round(values[2],2))
+    elif dataid == 0x640 : #ACUMULADOR
+        values = [random.randint(0, 100) for _ in range(4)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2))
+    elif dataid == 0x650 : #GPS
+        values = [random.randint(0, 100) for _ in range(5)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+    elif dataid == 0x670: #SUSPENSION
+        values = [random.randint(0, 100) for _ in range(5)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+    elif dataid == 0x660: #INVERTER & MOTOR
+        values = [random.randint(0, 100) for _ in range(5)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+    # temperatura frenos_ Definir IDs
+    elif dataid == 0x680: #TEMP Frenos
+        values = [random.randint(0, 100) for _ in range(5)]
+        return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+    else: 
+        values = [random.randint(0, 100) for _ in range(1)]
+        print(f'ID: {hex(int(values[0]))}')
+        return (dataid)
+    # Return the data as a tuple
 
 #FUNCTION TO INITIALIZE THE NRF24L01 - ONLY TO BE RUN ONCE 
 def initialize():
@@ -101,33 +130,39 @@ def read_data(nrf, address):
             # sent as an example message holding a temperature and humidity sent from the "simple-sender.py" program.
             if len(payload) == 32:
                 values = struct.unpack("<ffffffff", payload)
-
+                
                 dataid = values[0]
-                temperature = values[1]
-                humidity = values[2]
-                pressure = values[3]
-                dc_bus_voltage = values[4]
-                i_actual = values[5]
-                igbt_temp = values[6]
-                inverter_temp = values[7]
-                motor_temp = values[8]
-                n_actual = values[9]
-                ax = values[10]
-                ay = values[11]
-                az = values[12]
-                brake = values[13]
-                throttle = values[14]
-                current_sensor = values[15]
-                suspension_FR= values[16]
-                suspension_FL = values[17]
-                suspension_RR = values[18]
-                suspension_RL = values[19]
-
+            
+                if dataid == 0x610 : #IMU REAR
+                    print(f'ID: {hex(int(values[0]))}, ax: {round(values[1],2)}, ay: {round(values[2],2)}, az: {round(values[3],2)}, GyroX: {round(values[4],2)}, GyroY: {round(values[5],2)}, GyroZ: {round(values[6],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2), round(values[5],2), round(values[6],2))
+                elif dataid == 0x600 : #MOTOR INVERSOR
+                    print(f'ID: {hex(int(values[0]))}, motor_temp: {round(values[1],2)}, igbt_temp: {round(values[2],2)}, inverter_temp: {round(values[3],2)}, n_actual: {round(values[4],2)}, dc_bus_voltage: {round(values[5],2)}, i_actual: {round(values[6],2)}, E: {values[7]}') # E es de relleno, por el tamaño fijo
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2), round(values[5],2), round(values[6],2), values[7])  
+                elif dataid == 0x630 : #PEDALS
+                    print(f'ID: {hex(int(values[0]))}, throttle: {round(values[1],2)}, brake: {round(values[2],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2))
+                elif dataid == 0x640 : #ACUMULADOR
+                    print(f'ID: {hex(int(values[0]))}, current_sensor: {round(values[1],2)}, cell_min_v: {round(values[2],2)}, cell_max_temp: {round(values[3],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2))
+                elif dataid == 0x650 : #GPS
+                    print(f'ID: {hex(int(values[0]))}, speed: {round(values[1],2)}, lat: {round(values[2],2)}, long: {round(values[3],2)},alt: {round(values[4],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+                elif dataid == 0x670: #SUSPENSION
+                    print(f'ID: {hex(int(values[0]))}, FR: {round(values[1],2)}, FL: {round(values[2],2)}, RR: {round(values[3],2)}, RL: {round(values[4],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+                elif dataid == 0x660: #INVERTER & MOTOR
+                    print(f'ID: {hex(int(values[0]))}, inverter_in: {round(values[1],2)}, inverter_out: {round(values[2],2)}, motor_in: {round(values[3],2)}, motor_out: {round(values[4],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+                # temperatura frenos_ Definir IDs
+                elif dataid == 0x680: #TEMP Frenos
+                    print(f'ID: {hex(int(values[0]))}, TFR: {round(values[1],2)}, TFL: {round(values[2],2)}, TRR: {round(values[3],2)}, TRL: {round(values[4],2)}')
+                    return (dataid, round(values[1],2), round(values[2],2), round(values[3],2), round(values[4],2))
+                else: 
+                    print(f'ID: {hex(int(values[0]))}')
+                    return (dataid)
                 # Return the data as a tuple
-                return (dataid, temperature, humidity, pressure,
-                        dc_bus_voltage, i_actual, igbt_temp, inverter_temp,
-                        motor_temp, n_actual, ax, ay, az, brake, throttle, current_sensor, 
-                        inverter_temp, suspension_FR, suspension_FL, suspension_RR, suspension_RL)
+           
 
     except:
         traceback.print_exc()
@@ -146,37 +181,44 @@ import time
 import math
 
 def read_loop():
-    nrf, address = initialize() # !! uncomment this line when the raspberry is connected
+    # nrf, address = initialize() # !! uncomment this line when the raspberry is connected
     while True:
-        data = read_data(nrf, address) # read_data_simulation() !!!! Aquí debería ir read_data(nrf, address) cuando tengamos la raspberry conectada
+        # data = read_data(nrf, address) 
+        data = read_data_simulation() 
         print(data)
         if data is not None:
             #get element 0 of the tuple data 
             dataid = data[0]
-            temperature = data[1]
-            humidity = data[2]
-            pressure = data[3]
-            dc_bus_voltage = data[4]
-            i_actual = data[5]
-            igbt_temp = data[6]
-            inverter_temp = data[7]
-            motor_temp = data[8]
-            n_actual = data[9]
-            ax = data[10]
-            ay = data[11]
-            az = data[12]
-            brake = data[13]
-            throttle = data[14]
-            current_sensor = data[15]
-            suspension_FR= data[16]
-            suspension_FL = data[17]
-            suspension_RR = data[18]
-            suspension_RL = data[19]
+            if dataid == 0x610 : #IMU REAR
+                #print(f'ID: {hex(int(data[0]))}, ax: {round(data[1],2)}, ay: {round(data[2],2)}, az: {round(data[3],2)}, GyroX: {round(data[4],2)}, GyroY: {round(data[5],2)}, GyroZ: {round(data[6],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'ax': round(data[1],2), 'ay': round(data[2],2), 'az': round(data[3],2), 'GyroX': round(data[4],2), 'GyroY': round(data[5],2), 'GyroZ': round(data[6],2)})
+            elif dataid == 0x600 : #MOTOR INVERSOR
+                #print(f'ID: {hex(int(data[0]))}, motor_temp: {round(data[1],2)}, igbt_temp: {round(data[2],2)}, inverter_temp: {round(data[3],2)}, n_actual: {round(data[4],2)}, dc_bus_voltage: {round(data[5],2)}, i_actual: {round(data[6],2)}, E: {data[7]}') # E es de relleno, por el tamaño fijo
+                socketio.emit('newdata', {'dataid': dataid, 'motor_temp': round(data[1],2), 'igbt_temp': round(data[2],2), 'inverter_temp': round(data[3],2), 'n_actual': round(data[4],2), 'dc_bus_voltage': round(data[5],2), 'i_actual': round(data[6],2), 'E': data[7]})
+            elif dataid == 0x630 : #PEDALS
+                #print(f'ID: {hex(int(data[0]))}, throttle: {round(data[1],2)}, brake: {round(data[2],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'throttle': round(data[1],2), 'brake': round(data[2],2)})
+            elif dataid == 0x640 : #ACUMULADOR
+                #print(f'ID: {hex(int(data[0]))}, current_sensor: {round(data[1],2)}, cell_min_v: {round(data[2],2)}, cell_max_temp: {round(data[3],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'current_sensor': round(data[1],2), 'cell_min_v': round(data[2],2), 'cell_max_temp': round(data[3],2)})
+            elif dataid == 0x650 : #GPS
+                #print(f'ID: {hex(int(data[0]))}, speed: {round(data[1],2)}, lat: {round(data[2],2)}, long: {round(data[3],2)},alt: {round(data[4],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'speed': round(data[1],2), 'lat': round(data[2],2), 'long': round(data[3],2), 'alt': round(data[4],2)})
+            elif dataid == 0x670: #SUSPENSION
+                #print(f'ID: {hex(int(data[0]))}, FR: {round(data[1],2)}, FL: {round(data[2],2)}, RR: {round(data[3],2)}, RL: {round(data[4],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'FR': round(data[1],2), 'FL': round(data[2],2), 'RR': round(data[3],2), 'RL': round(data[4],2)})
+            elif dataid == 0x660: #INVERTER & MOTOR
+                #print(f'ID: {hex(int(data[0]))}, inverter_in: {round(data[1],2)}, inverter_out: {round(data[2],2)}, motor_in: {round(data[3],2)}, motor_out: {round(data[4],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'inverter_in': round(data[1],2), 'inverter_out': round(data[2],2), 'motor_in': round(data[3],2), 'motor_out': round(data[4],2)})
+            # temperatura frenos_ Definir IDs
+            elif dataid == 0x680: #TEMP Frenos
+                #print(f'ID: {hex(int(data[0]))}, TFR: {round(data[1],2)}, TFL: {round(data[2],2)}, TRR: {round(data[3],2)}, TRL: {round(data[4],2)}')
+                socketio.emit('newdata', {'dataid': dataid, 'TFR': round(data[1],2), 'TFL': round(data[2],2), 'TRR': round(data[3],2), 'TRL': round(data[4],2)})
+            else: 
+                print(f'ID: {hex(int(data[0]))}')
+                return (dataid)
 
-            #print(type(temperature))
-            
-            socketio.emit('newdata', {'dataid': dataid, 'temperature': temperature, 'humidity': humidity, 'pressure': pressure, 'dc_bus_voltage': dc_bus_voltage, 'i_actual': i_actual, 'igbt_temp': igbt_temp, 'current_sensor': current_sensor, 'motor_temp': motor_temp, 'n_actual': n_actual, 'ax': ax, 'ay': ay, 'az': az, 'brake': brake, 'throttle': throttle, 'inverter_temp': inverter_temp, 'suspension_FR': suspension_FR, 'suspension_FL': suspension_FL, 'suspension_RR': suspension_RR, 'suspension_RL': suspension_RL})
-        time.sleep(2)
+        time.sleep(1)
 
 #Ruta principal   
 @app.route('/')

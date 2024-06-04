@@ -1,19 +1,19 @@
 //Conection con el flask server. (En el navegador hay que abrir esta dirección)
 var socket = io.connect('http://127.0.0.1:5000')
 
-//Habría que investigar más sobre chart.js que esto me lo han hecho jajajaj
+
 // El delay repreenta que los puntos estarán fuera del gráfico 2 segundos después de que se hayan recibido. (Se mueve hacia la izquierda vamos)
-var ctx1 = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx1, {
+var ctx1 = document.getElementById('myChart_pedals').getContext('2d');
+var chart1 = new Chart(ctx1, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'Temperature',
+            label: 'throttle',
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
             fill: false
         }, {
-            label: 'Humidity',
+            label: 'brake',
             data: [],
             borderColor: 'rgba(75, 192, 192, 1)',
             fill: false
@@ -39,14 +39,29 @@ var chart = new Chart(ctx1, {
 //char.update actualiza el gráfico con los datos recibidos.
 //muy guay porque no se vuelve a crear todo el gráfico cada vez que se recibe un dato, sino que se actualiza el gráfico con los datos recibidos
 
-var ctx2 = document.getElementById('myChart_P').getContext('2d');
+var ctx2 = document.getElementById('myChart_TEMP_FRENOS').getContext('2d');
 var chart2 = new Chart(ctx2, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'Pressure',
+            label: 'TFR',
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }, {
+            label: 'TFL',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+        }, {
+            label: 'TRR',
+            data: [],
+            borderColor: 'rgba(54, 162, 235, 1)',
+            fill: false
+        }, {
+            label: 'TRL',
+            data: [],
+            borderColor: 'rgba(255, 206, 86, 1)',
             fill: false
         }]
     },
@@ -225,8 +240,8 @@ var chart8 = new Chart(ctx8, {
     }
 });
 
-// myChart_a
-var ctx9 = document.getElementById('myChart_a').getContext('2d');
+// myChart_IMU REAR ax ay az
+var ctx9 = document.getElementById('myChart_IMU_REAR').getContext('2d');
 var chart9 = new Chart(ctx9, {
     type: 'line',
     data: {
@@ -262,15 +277,25 @@ var chart9 = new Chart(ctx9, {
     }
 });
 
-
-var ctx10 = document.getElementById('myChart_brake').getContext('2d');
+// myChart_IMU REAR GyroX GyroY GyroZ
+var ctx10 = document.getElementById('myChart_IMU_REAR_2').getContext('2d');
 var chart10 = new Chart(ctx10, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'brake',
+            label: 'GyroX',
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }, {
+            label: 'GyroY',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+        }, {
+            label: 'GyroZ',
+            data: [],
+            borderColor: 'rgba(54, 162, 235, 1)',
             fill: false
         }]
     },
@@ -290,12 +315,12 @@ var chart10 = new Chart(ctx10, {
 });
 
 
-var ctx11 = document.getElementById('myChart_throttle').getContext('2d');
+var ctx11 = document.getElementById('myChart_GPS_Speed').getContext('2d');
 var chart11 = new Chart(ctx11, {
     type: 'line',
     data: {
         datasets: [{
-            label: 'throttle',
+            label: 'speed',
             data: [],
             borderColor: 'rgba(255, 99, 132, 1)',
             fill: false
@@ -315,11 +340,47 @@ var chart11 = new Chart(ctx11, {
         }
     }
 });
+// Ver si se puede hacer otro tipo de gráfico para GPS
+var ctx12 = document.getElementById('myChart_GPS').getContext('2d');
+var chart12 = new Chart(ctx12, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'Latitude',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }, {
+            label: 'Longitude',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+        },{
+            label: 'Altitude',
+            data: [],
+            borderColor: 'rgba(54, 162, 235, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
 
 
 // myChart_suspension will have 4 lines Suspension_FR, Suspension_FL, Suspension_RR, Suspension_RL
 var ctx13 = document.getElementById('myChart_suspension').getContext('2d');
-
 var chart13 = new Chart(ctx13, {
     type: 'line',
     data: {
@@ -360,54 +421,231 @@ var chart13 = new Chart(ctx13, {
     }
 });
 
+var ctx14 = document.getElementById('myChart_cell').getContext('2d');
+var chart14 = new Chart(ctx14, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'cell_min_v',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }, {
+            label: 'cell_max_temp',
+            data: [],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+var ctx15 = document.getElementById('myChart_current').getContext('2d');
+var chart15 = new Chart(ctx15, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'current_sensor',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var ctx16 = document.getElementById('myChart_inverter_in').getContext('2d');
+var chart16 = new Chart(ctx16, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'inverter_in',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var ctx17 = document.getElementById('myChart_inverter_out').getContext('2d');
+var chart17 = new Chart(ctx17, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'inverter_out',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var ctx18 = document.getElementById('myChart_motor_in').getContext('2d');
+var chart18 = new Chart(ctx18, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'motor_in',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+var ctx19 = document.getElementById('myChart_motor_out').getContext('2d');
+var chart19 = new Chart(ctx19, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: 'motor_out',
+            data: [],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                type: 'realtime',
+                realtime: {
+                    delay: 2000
+                }
+            },
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
 socket.on('newdata', function(data) {
-    chart.data.datasets[0].data.push({x: Date.now(), y: data.temperature});
-    chart.data.datasets[1].data.push({x: Date.now(), y: data.humidity});
-    
-    chart2.data.datasets[0].data.push({x: Date.now(), y: data.pressure});
-    
-    chart3.data.datasets[0].data.push({x: Date.now(), y: data.dc_bus_voltage});
-    
-    chart4.data.datasets[0].data.push({x: Date.now(), y: data.i_actual});
-    
-    chart5.data.datasets[0].data.push({x: Date.now(), y: data.igbt_temp});
-    
-    chart6.data.datasets[0].data.push({x: Date.now(), y: data.inverter_temp});
-    
-    chart7.data.datasets[0].data.push({x: Date.now(), y: data.motor_temp});
-    
-    chart8.data.datasets[0].data.push({x: Date.now(), y: data.n_actual});
-
-    //este tiene 3 
-    chart9.data.datasets[0].data.push({x: Date.now(), y: data.ax});
-    chart9.data.datasets[1].data.push({x: Date.now(), y: data.ay});
-    chart9.data.datasets[2].data.push({x: Date.now(), y: data.az});
-
-    chart10.data.datasets[0].data.push({x: Date.now(), y: data.brake});
-    
-    chart11.data.datasets[0].data.push({x: Date.now(), y: data.throttle});
-
-    //chart12.data.datasets[0].data.push({x: Date.now(), y: data.inverter_temp});
-
-    //este tiene 4
-    chart13.data.datasets[0].data.push({x: Date.now(), y: data.suspension_FR});
-    chart13.data.datasets[1].data.push({x: Date.now(), y: data.suspension_FL});
-    chart13.data.datasets[2].data.push({x: Date.now(), y: data.suspension_RR});
-    chart13.data.datasets[3].data.push({x: Date.now(), y: data.suspension_RL});
-
-
-    
-    chart.update();
-    chart2.update();
-    chart3.update();
-    chart4.update();
-    chart5.update();
-    chart6.update();
-    chart7.update();
-    chart8.update();
-    chart9.update();
-    chart10.update();
-    chart11.update();
-    chart13.update();
-
+    if (data.dataid == 0x610) { // IMU REAR
+        console.log(data);
+        chart9.data.datasets[0].data.push({x: Date.now(), y: data.ax});
+        chart9.data.datasets[1].data.push({x: Date.now(), y: data.ay});
+        chart9.data.datasets[2].data.push({x: Date.now(), y: data.az});
+        chart10.data.datasets[0].data.push({x: Date.now(), y: data.GyroX});
+        chart10.data.datasets[1].data.push({x: Date.now(), y: data.GyroY});
+        chart10.data.datasets[2].data.push({x: Date.now(), y: data.GyroZ});
+        chart9.update();
+        chart10.update();
+    } else if (data.dataid == 0x600) { // MOTOR INVERSOR
+        console.log(data);
+        chart3.data.datasets[0].data.push({x: Date.now(), y: data.dc_bus_voltage});
+        chart4.data.datasets[0].data.push({x: Date.now(), y: data.i_actual});
+        chart5.data.datasets[0].data.push({x: Date.now(), y: data.igbt_temp});
+        chart6.data.datasets[0].data.push({x: Date.now(), y: data.inverter_temp});
+        chart7.data.datasets[0].data.push({x: Date.now(), y: data.motor_temp});
+        chart8.data.datasets[0].data.push({x: Date.now(), y: data.n_actual});
+        chart3.update();
+        chart4.update();
+        chart5.update();
+        chart6.update();
+        chart7.update();      
+    } else if (data.dataid == 0x630) { // PEDALS
+        console.log(data);
+        chart1.data.datasets[0].data.push({x: Date.now(), y: data.throttle});
+        chart1.data.datasets[1].data.push({x: Date.now(), y: data.brake});
+        chart1.update();
+    } else if (data.dataid == 0x640) { // ACCUMULADOR
+        console.log(data);
+        chart14.data.datasets[0].data.push({x: Date.now(), y: data.cell_min_v});
+        chart14.data.datasets[1].data.push({x: Date.now(), y: data.cell_max_temp});
+        chart15.data.datasets[0].data.push({x: Date.now(), y: data.current_sensor});
+        chart15.update();
+        chart14.update();     
+    } else if (data.dataid == 0x650) { // GPS 
+        console.log(data);
+        chart11.data.datasets[0].data.push({x: Date.now(), y: data.speed});
+        chart12.data.datasets[0].data.push({x: Date.now(), y: data.lat});
+        chart12.data.datasets[1].data.push({x: Date.now(), y: data.long});
+        chart12.data.datasets[2].data.push({x: Date.now(), y: data.alt});
+        chart12.update();
+        chart11.update();
+    } else if (data.dataid == 0x670) { // SUSPENSION
+        console.log(data);
+        chart13.data.datasets[0].data.push({x: Date.now(), y: data.FR});
+        chart13.data.datasets[1].data.push({x: Date.now(), y: data.FL});
+        chart13.data.datasets[2].data.push({x: Date.now(), y: data.RR});
+        chart13.data.datasets[3].data.push({x: Date.now(), y: data.RL});
+        chart13.update();
+    } else if (data.dataid == 0x660) { // INVERTER & MOTOR
+        console.log(data);
+        chart16.data.datasets[0].data.push({x: Date.now(), y: data.inverter_in});
+        chart17.data.datasets[0].data.push({x: Date.now(), y: data.inverter_out});
+        chart18.data.datasets[0].data.push({x: Date.now(), y: data.motor_in});
+        chart19.data.datasets[0].data.push({x: Date.now(), y: data.motor_out});
+        chart16.update();
+        chart17.update();
+        chart18.update();
+        chart19.update();
+    } else if (data.dataid == 0x680) { // TEMP FRENOS
+        console.log(data);
+        chart2.data.datasets[0].data.push({x: Date.now(), y: data.TFR});
+        chart2.data.datasets[1].data.push({x: Date.now(), y: data.TFL});
+        chart2.data.datasets[2].data.push({x: Date.now(), y: data.TRR});
+        chart2.data.datasets[3].data.push({x: Date.now(), y: data.TRL});
+        chart2.update();
+    }
 });
