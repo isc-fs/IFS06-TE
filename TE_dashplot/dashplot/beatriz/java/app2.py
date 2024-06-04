@@ -99,15 +99,35 @@ def read_data(nrf, address):
 
             # If the length of the message is 9 bytes and the first byte is 0x01, then we try to interpret the bytes
             # sent as an example message holding a temperature and humidity sent from the "simple-sender.py" program.
-            if len(payload) == 9:
-                values = struct.unpack("<Bff", payload)
+            if len(payload) == 32:
+                values = struct.unpack("<ffffffff", payload)
 
                 dataid = values[0]
                 temperature = values[1]
                 humidity = values[2]
+                pressure = values[3]
+                dc_bus_voltage = values[4]
+                i_actual = values[5]
+                igbt_temp = values[6]
+                inverter_temp = values[7]
+                motor_temp = values[8]
+                n_actual = values[9]
+                ax = values[10]
+                ay = values[11]
+                az = values[12]
+                brake = values[13]
+                throttle = values[14]
+                current_sensor = values[15]
+                suspension_FR= values[16]
+                suspension_FL = values[17]
+                suspension_RR = values[18]
+                suspension_RL = values[19]
 
                 # Return the data as a tuple
-                return (dataid, temperature, humidity) #TUPLA
+                return (dataid, temperature, humidity, pressure,
+                        dc_bus_voltage, i_actual, igbt_temp, inverter_temp,
+                        motor_temp, n_actual, ax, ay, az, brake, throttle, current_sensor, 
+                        inverter_temp, suspension_FR, suspension_FL, suspension_RR, suspension_RL)
 
     except:
         traceback.print_exc()
@@ -147,7 +167,7 @@ def read_loop():
             az = data[12]
             brake = data[13]
             throttle = data[14]
-            laquefalta = data[15]
+            current_sensor = data[15]
             suspension_FR= data[16]
             suspension_FL = data[17]
             suspension_RR = data[18]
@@ -155,7 +175,7 @@ def read_loop():
 
             #print(type(temperature))
             
-            socketio.emit('newdata', {'dataid': dataid, 'temperature': temperature, 'humidity': humidity, 'pressure': pressure, 'dc_bus_voltage': dc_bus_voltage, 'i_actual': i_actual, 'igbt_temp': igbt_temp, 'laquefalta': laquefalta, 'motor_temp': motor_temp, 'n_actual': n_actual, 'ax': ax, 'ay': ay, 'az': az, 'brake': brake, 'throttle': throttle, 'inverter_temp': inverter_temp, 'suspension_FR': suspension_FR, 'suspension_FL': suspension_FL, 'suspension_RR': suspension_RR, 'suspension_RL': suspension_RL})
+            socketio.emit('newdata', {'dataid': dataid, 'temperature': temperature, 'humidity': humidity, 'pressure': pressure, 'dc_bus_voltage': dc_bus_voltage, 'i_actual': i_actual, 'igbt_temp': igbt_temp, 'current_sensor': current_sensor, 'motor_temp': motor_temp, 'n_actual': n_actual, 'ax': ax, 'ay': ay, 'az': az, 'brake': brake, 'throttle': throttle, 'inverter_temp': inverter_temp, 'suspension_FR': suspension_FR, 'suspension_FL': suspension_FL, 'suspension_RR': suspension_RR, 'suspension_RL': suspension_RL})
         time.sleep(2)
 
 #Ruta principal   

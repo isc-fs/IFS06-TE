@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 # Show message received as hex.
                 print(f"{now:%Y-%m-%d %H:%M:%S.%f}: pipe: {pipe}, len: {len(payload)}, bytes: {hex}, count: {count}")
 
-                                # If the length of the message is 9 bytes and the first byte is 0x01, then we try to interpret the bytes
+                # If the length of the message is 9 bytes and the first byte is 0x01, then we try to interpret the bytes
                 # sent as an example message holding a temperature and humidity sent from the "simple-sender.py" program.
                 if len(payload) == 32:
                      values = struct.unpack("<ffffffff", payload)
