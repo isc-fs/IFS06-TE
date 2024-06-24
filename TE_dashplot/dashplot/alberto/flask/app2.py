@@ -122,15 +122,23 @@ def read_data(nrf, address):
             count += 1
             now = datetime.now()
 
+
             # Read pipe and payload for message.
             pipe = nrf.data_pipe()
             payload = nrf.get_payload()
+            #print(len(payload))
+            #print(payload)
 
             # If the length of the message is 9 bytes and the first byte is 0x01, then we try to interpret the bytes
             # sent as an example message holding a temperature and humidity sent from the "simple-sender.py" program.
             if len(payload) == 32:
-                values = struct.unpack("<ffffffff", payload)
-                
+                values = struct.unpack("<Ifffffff", payload)
+                #print(f'Received payload: {payload.hex()}')  # Debugging print
+                # dataid_hex = format(int("".join(map(str, values[:4]))), 'x')  # Join elements and convert to hex
+                #print(dataid_hex)
+                print(values[0])
+                #print(values)
+                #print(type(values[0]))
                 dataid = values[0]
             
                 if dataid == 0x610 : #IMU REAR
@@ -181,10 +189,10 @@ import time
 import math
 
 def read_loop():
-    # nrf, address = initialize() # !! uncomment this line when the raspberry is connected
+    nrf, address = initialize() # !! uncomment this line when the raspberry is connected
     while True:
-        # data = read_data(nrf, address) 
-        data = read_data_simulation() 
+        data = read_data(nrf, address) 
+        #data = read_data_simulation() 
         print(data)
         if data is not None:
             #get element 0 of the tuple data 
@@ -218,7 +226,7 @@ def read_loop():
                 print(f'ID: {hex(int(data[0]))}')
                 return (dataid)
 
-        time.sleep(1)
+        #time.sleep(1)
 
 #Ruta principal   
 @app.route('/')
