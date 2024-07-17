@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Car Telemetry</title>
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" >
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+        }
+    
+        .grid-item {
+            border: 1px solid black;
+            padding: 10px;
+        }
+    </style>
+    
+</head>
+
+
+
+<body>
+    <h1>Car Telemetry</h1>
+    <div class="grid-container">
+        <div class="grid-item">
+            <h2>PEDALS</h2>
+            <canvas id="myChart_pedals"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>TEMPERATURA FRENOS</h2>
+            <canvas id="myChart_TEMP_FRENOS"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>DC Bus Voltage</h2>
+            <canvas id="myChart_dc_bus_voltage"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>i actual</h2>
+            <canvas id="myChart_i_actual"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>igbt temperature</h2>
+            <canvas id="myChart_igbt_temp"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>inverter temperature</h2>
+            <canvas id="myChart_inverter_temp"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>motor temperature</h2>
+            <canvas id="myChart_motor_temp"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>n_actual</h2>
+            <canvas id="myChart_n_actual"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>ax ay az</h2>
+            <canvas id="myChart_IMU_REAR"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>GyroX GyroY GyroZ</h2>
+            <canvas id="myChart_IMU_REAR_2"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>Speed</h2>
+            <canvas id="myChart_GPS_Speed"></canvas>
+        </div>
+
+        <div class="grid-item">
+            <h2>GPS</h2>
+            <canvas id="myChart_GPS"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>Suspensión</h2>
+            <canvas id="myChart_suspension"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>cell</h2>
+            <canvas id="myChart_cell"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>current</h2>
+            <canvas id="myChart_current"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>inverter_in</h2>
+            <canvas id="myChart_inverter_in"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>inverter_out</h2>
+            <canvas id="myChart_inverter_out"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>motor_in</h2>
+            <canvas id="myChart_motor_in"></canvas>
+        </div>
+        <div class="grid-item">
+            <h2>motor_out</h2>
+            <canvas id="myChart_motor_out"></canvas>
+        </div>
+        
+    </div>
+
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
+
+
+
