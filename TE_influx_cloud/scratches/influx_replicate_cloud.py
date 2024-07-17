@@ -5,6 +5,9 @@ import requests
 # Helper function to replicate data between time range
 def replicate(bucket,oss,cloud):
   '''
+  Used in replicate_auto.py to replicate data from OSS to Cloud
+
+
   oss: list with required oss variables
       oss = [oss_url,oss_token,oss_org]
 

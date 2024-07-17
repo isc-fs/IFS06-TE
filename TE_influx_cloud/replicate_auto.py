@@ -10,6 +10,22 @@ import os
 
 import requests
 
+
+
+'''
+Code will only work on rasberry pi with influxdd installed
+
+
+variables en .env (meter de nuevo si se cambia de maquina)
+
+Sacas los buckets de OSS y de CLOUD y comparas
+
+Funcion clave para replicar: replicate(bucket,oss,cloud) en influx_replicate_cloud.py
+
+'''
+
+
+
 # Load variables from .env file
 print('Loading .env variables')
 load_dotenv()
