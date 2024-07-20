@@ -58,7 +58,8 @@ def before_request():
 
 # Dash app
 dash_app = dash.Dash(__name__, server=app, url_base_pathname='/dashboard/')
-CSV_DIR = 'TE_web_dashboard/web_app/csv_files'
+CSV_DIR = 'csv_files'
+
 
 # Function to list CSV files
 def list_csv_files():
