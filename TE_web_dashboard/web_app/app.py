@@ -60,6 +60,11 @@ def before_request():
 dash_app = dash.Dash(__name__, server=app, url_base_pathname='/dashboard/')
 CSV_DIR = 'TE_web_dashboard/web_app/csv_files'
 
+# Get the directory of the current script
+base_dir = os.path.dirname(os.path.abspath(__file__))
+CSV_DIR = os.path.join(base_dir, 'csv_files')
+
+print(CSV_DIR)
 
 # Function to list CSV files
 def list_csv_files():
