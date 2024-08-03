@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <title>FS Real Time Raspberry</title>
+
+    <style>
+      .status-light {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+      }
+      .green-light {
+        background-color: green;
+      }
+      .red-light {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">FS Real Time Raspberry</h1>
+      <form method="post">
+        <div class="form-group">
+          <label for="piloto">Piloto</label>
+          <input type="text" class="form-control" id="piloto" name="piloto" required>
+        </div>
+        <div class="form-group">
+          <label for="circuito">Circuito</label>
+          <input type="text" class="form-control" id="circuito" name="circuito" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Start</button>
+      </form>
+      <div class="mt-5">
+        <div id="status-light" class="status-light red-light"></div>
+        <h3 class="d-inline-block">Status</h3>
+        <h3>Incoming Data:</h3>
+        <pre id="data-display" class="border p-3" style="background-color: #f8f9fa; max-height: 300px; overflow-y: scroll;"></pre>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+    <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function checkData() {
+        $.get('/check_data', function(data) {
+          const statusLight = document.getElementById('status-light');
+          const dataDisplay = document.getElementById('data-display');
+          
+          if (data.data_received) {
+            statusLight.className = 'status-light green-light';
+            dataDisplay.textContent = data.current_data.join('\n');
+          } else {
+            statusLight.className = 'status-light red-light';
+          }
+        });
+      }
+
+      setInterval(checkData, 10000);
+    </script>
+  </body>
+</html>

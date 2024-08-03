@@ -1,0 +1,13 @@
+stm32F1 to rpi with nRF24
+
+    https://github.com/beadone/STM32-nRF24L01_dht21_TX
+
+
+    Convertir un codigo de F1 a G4
+        https://community.st.com/t5/stm32-mcus-products/what-registers-on-the-stm32g4-correspond-to-cr1-and-cr2-on-the/td-p/77885
+
+        Basicamente, esta jodido?
+
+    Migrar de F0 a G0
+        https://www.st.com/content/ccc/resource/technical/document/application_note/group1/83/a2/f5/e1/8e/9e/43/57/DM00483659/files/DM00483659.pdf/jcr:content/translations/en.DM00483659.pdf
+        

@@ -173,6 +173,6 @@ while not END:
 
     rxnrf24(bucketnever)
 
-    print("\nPress PLAY to start RSHIFT to end")
+    # print("\nPress PLAY to start RSHIFT to end")
 
     #para Flux, si quieres seleccionr un bucket por ID en vez del nombre -> from bucketID...

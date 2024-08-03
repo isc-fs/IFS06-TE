@@ -1,0 +1,48 @@
+
+
+Problems sending SPI Data from STM32 to arduino
+
+    https://stackoverflow.com/questions/74439873/problems-sending-spi-data-from-stm32-to-arduino
+
+
+Basic SPI communication between an STM32 master and Arduino slave
+
+    https://github.com/second-string/SPI-between-STM32-and-Arduino
+
+
+Stm32F1 as master, arduino uno as slave
+
+    Convertir codigo de un F1 a un G4??
+
+    https://circuitdigest.com/microcontroller-projects/stm32-spi-communication-tutorial
+
+
+    Este otro es similar, pero el codigo del stm32 es con cubeMX
+
+    https://brian.team/commentary/spi-between-stm32-and-arduino/
+
+
+
+SEGUN CHAT**
+
+. Hardware Connections
+STM32 to Arduino (SPI Communication)
+STM32 SCK (Clock) -> Arduino SCK
+STM32 MOSI (Master Out Slave In) -> Arduino MOSI
+STM32 MISO (Master In Slave Out) -> Arduino MISO
+STM32 CS (Chip Select) -> Arduino pin (choose any digital pin)
+Ground (GND) -> GND
+Arduino to nRF24L01 (SPI Communication)
+Arduino SCK -> nRF24 SCK
+Arduino MOSI -> nRF24 MOSI
+Arduino MISO -> nRF24 MISO
+Arduino CSN (Chip Select Not) -> nRF24 CSN
+Arduino CE (Chip Enable) -> nRF24 CE
+Ground (GND) -> GND
+Power (3.3V) -> VCC (Ensure nRF24 gets 3.3V, not 5V)
+
+Important Considerations
+Voltage Levels: Ensure that the voltage levels are compatible between STM32, Arduino, and nRF24L01. nRF24L01 typically operates at 3.3V.
+Timing and Synchronization: Proper synchronization must be ensured to avoid data corruption.
+Interrupt Handling: Carefully handle interrupts on the Arduino to ensure reliable data reception from the STM32.
+Libraries and Drivers: Ensure that you have the correct libraries installed for the nRF24L01 module on the Arduino (RF24 library is commonly used).
