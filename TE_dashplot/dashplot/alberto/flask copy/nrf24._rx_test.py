@@ -15,17 +15,7 @@ CE_PIN = 25
 
 # Initialize the NRF24 module
 
-nrf = NRF24(pi, ce=25, payload_size=RF24_PAYLOAD.DYNAMIC, channel=100, data_rate=RF24_DATA_RATE.RATE_2MBPS, pa_level=RF24_PA.MIN)
-
-""" nrf = NRF24(pi, ce=CE_PIN, spi_channel=0, spi_speed=5000000)
-
-# Configure the NRF24 module to match the STM32 transmitter settings
-nrf.set_channel(100)  # RF_CH: channel=100
-nrf.set_data_rate(RF24_DATA_RATE.RATE_2MBPS)  # RF_SETUP: 2 Mbps
-nrf.set_crc_bytes(RF24_CRC.BYTES_2)  # CONFIG: CRC 2 byte
-nrf.set_address_bytes(5)  # SETUP_AW: address width bytes 5
-nrf.set_retransmission(1, 15)  # SETUP_RETR: retry delay 500 us, retries 15
-nrf.set_pa_level(RF24_PA.MAX)  # RF_SETUP: 0 dBm """
+nrf = NRF24(pi, ce=25, payload_size=RF24_PAYLOAD.DYNAMIC, channel=100, data_rate=RF24_DATA_RATE.RATE_2MBPS, pa_level=RF24_PA.MIN)# MIN
 
 # Set the RX and TX addresses
 address = [0xE7, 0xE7, 0xE7, 0xE7, 0xE7]

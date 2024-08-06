@@ -211,12 +211,13 @@ def read_loop():
 
     #nrf, address = initialize() # !! uncomment this line when the raspberry is connected
     #Initialize the pigpio library
+    # Connect to pigpio daemon
+    # Initialize the pigpio library
     pi = pigpio.pi()
 
     if not pi.connected:
         print("Could not connect to pigpio")
         exit()
-
     # Define the CE and IRQ pins
     CE_PIN = 25
     nrf = NRF24(pi, ce=25, payload_size=RF24_PAYLOAD.DYNAMIC, channel=100, data_rate=RF24_DATA_RATE.RATE_2MBPS, pa_level=RF24_PA.MIN)
@@ -235,8 +236,7 @@ def read_loop():
                 pipe = nrf.data_pipe()
                 data = nrf.get_payload()
                 print(f"Received data on pipe {pipe}: {data}")
-
-                
+                '''
                 if data is not None:
                     #get element 0 of the tuple data 
                     dataid = data[0]
@@ -268,8 +268,11 @@ def read_loop():
                     else: 
                         print(f'DATA WITH ID: {hex(int(data[0]))} NOT SENT')
                         return (dataid)
+                '''
         except KeyboardInterrupt:
             print("Exiting...")
+        except Exception as e:
+                print(f"Ocurrió un error: {e}")
         finally:
             nrf.power_down()
             pi.stop()
