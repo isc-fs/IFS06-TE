@@ -8,8 +8,27 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import pandas as pd
 
+from datetime import timedelta
+from flask import session
+
+
+'''
+No consigo que avise una vez se acaba el tiempo de la sesión, pero si se cierra la pestaña y se vuelve a abrir,
+se pide de nuevo la contraseña.
+
+Tampoco consigo poner el icono en el login.html
+
+
+'''
+
+
+# print the current working directory
+print(os.getcwd())
+
 app = Flask(__name__)
 app.secret_key = 'super secret key'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=1)  # Set session lifetime to 30 minutes
+
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -17,7 +36,7 @@ login_manager.init_app(app)
 login_manager.login_view = "login"
 
 # Contraseña correcta
-CORRECT_PASSWORD = '33'
+CORRECT_PASSWORD = 'iscracingteam'
 
 # Clase de usuario para Flask-Login
 class User(UserMixin):
@@ -29,6 +48,15 @@ def user_loader(user_id):
     user.id = user_id
     return user
 
+# Decorador para verificar la expiración de la sesión
+@app.before_request
+def before_request():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=1)
+    session.modified = True
+    if not current_user.is_authenticated and request.endpoint != 'login':
+        return redirect(url_for('login'))
+
 # Ruta de inicio de sesión
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -39,6 +67,7 @@ def login():
             user = User()
             user.id = 'user'  # ID estático, ya que no estamos manejando múltiples usuarios
             login_user(user)
+            session.permanent = True
             return redirect(url_for('dashboard'))
         else:
             error = 'Contraseña incorrecta'
@@ -46,6 +75,7 @@ def login():
 
 # Ruta de cierre de sesión
 @app.route('/logout')
+@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
@@ -64,39 +94,47 @@ CSV_DIR = 'TE_web_dashboard/web_app/csv_files'
 base_dir = os.path.dirname(os.path.abspath(__file__))
 CSV_DIR = os.path.join(base_dir, 'csv_files')
 
-print(CSV_DIR)
-
 # Function to list CSV files
 def list_csv_files():
     if not os.path.exists(CSV_DIR):
         os.makedirs(CSV_DIR)
     return [f for f in os.listdir(CSV_DIR) if f.endswith('.csv')]
 
+# Define the title
+dash_app.title = 'ISC FS Team'
+dash_app._favicon = 'icon.ico'
+
 # Define the layout for the Dash app
 dash_app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
+    dcc.Store(id='search-bar-store'),
     html.Div([
         html.Div([
-            html.H2("CSV Files", className="sidebar-title"),
-            dcc.Input(id='search-bar', type='text', placeholder='Search CSV...', style={'width': '90%', 'padding': '10px'}),
-            html.Ul(id='file-list', className="file-list")
-
+            html.Div([
+                html.Img(src='/static/icon.ico', className='circular-icon'),
+                html.H2("CSV Files", className="sidebar-title"),
+                dcc.Input(id='search-bar', type='text', placeholder='Search CSV...', style={'width': '90%', 'padding': '10px'})
+            ], className="sidebar-header"),
+            html.Div([
+                html.Ul(id='file-list', className="file-list")
+            ], className="sidebar-content")
         ], className="sidebar"),
         html.Div(id='page-content', className="content"),
         dcc.Download(id="download-csv"),
     ], className="container", style={'height': '100vh', 'overflowY': 'hidden'})
 ])
 
-# Callback to update the file list dynamically
-@dash_app.callback(Output('file-list', 'children'), [Input('url', 'pathname'), Input('search-bar', 'value')])
-def update_file_list(pathname, search_value):
-    csv_files = list_csv_files()
+# Callback to update the file list based on search input
+@dash_app.callback(
+    Output('file-list', 'children'),
+    [Input('search-bar', 'value')]
+)
+def update_file_list(search_value):
+    files = list_csv_files()
     if search_value:
-        # Filtra los archivos que contienen el texto de búsqueda (case-insensitive)
-        filtered_files = [file for file in csv_files if search_value.lower() in file.lower()]
-    else:
-        filtered_files = csv_files
-    return [html.Li(dcc.Link(file, href=f'/dashboard/{file}')) for file in filtered_files]
+        search_terms = search_value.split()
+        files = [f for f in files if all(term.lower() in f.lower() for term in search_terms)]
+    return [html.Li(html.A(f, href=f'/dashboard/{f}')) for f in files]
 
 # Callback para manejar la descarga del archivo CSV
 @dash_app.callback(
@@ -120,12 +158,18 @@ def download_csv(n_clicks, pathname):
             return dict(content=content, filename=file_path)
 
 # Callback to display the CSV file content and download link
-@dash_app.callback(Output('page-content', 'children'), [Input('url', 'pathname')])
-def display_page(pathname):
+@dash_app.callback(Output('page-content', 'children'), 
+                   [Input('url', 'pathname')], 
+                   [State('search-bar', 'value')])
+def display_page(pathname, search_value):
     if pathname and pathname != '/dashboard/':
         file_path = pathname.split('/')[-1]
         if file_path in list_csv_files():
             df = pd.read_csv(os.path.join(CSV_DIR, file_path), parse_dates=[0])
+
+            # Ordenar el DataFrame por la columna 'time'
+            df = df.sort_values(by='time')
+
             graphs = []
             for unique_id in df['measurement'].unique():
                 filtered_df = df[df['measurement'] == unique_id]
@@ -147,11 +191,17 @@ def display_page(pathname):
                 html.Button("Option 2", id="option-2"),
             ], className="options-menu")
 
-            return html.Div([options_menu,dcc.Download(id="download-csv"), html.Div(graphs, style={'overflowY': 'scroll', 'height': '100vh'})])
+            return html.Div([
+                options_menu,
+                dcc.Download(id="download-csv"),
+                html.Div(graphs, className='curved-edges', style={'overflowY': 'scroll', 'height': '100vh'})
+            ])
     return html.Div('Select a CSV file to view its dashboard.', style={
-                    'text-align': 'center', 
-                    'margin-top': '20%', 
-                    'font-size': '24px'})
+        'text-align': 'center',
+        'margin-top': '20%',
+        'font-size': '24px',
+        'color': 'white'
+    })
 
 @app.route('/download/<path:filename>')
 def download_file(filename):
