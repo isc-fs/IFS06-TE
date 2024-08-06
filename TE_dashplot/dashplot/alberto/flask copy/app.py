@@ -66,8 +66,9 @@ def receive_data():
     if nrf.data_ready():
         pipe = nrf.data_pipe()
         payload = nrf.get_payload()
-        #print(f"Datos recibidos en la tubería {pipe}: {payload}")
-        return payload
+        if not pipe == 7:
+            #print(f"Datos recibidos en la tubería {pipe}: {payload}")
+            return payload
     return None
 
 app = Flask(__name__)
@@ -89,7 +90,6 @@ def read_loop():
                 values = struct.unpack('8f', data)
                 #print(values)
                 emit_data(values)
-            time.sleep(0.1)
     except KeyboardInterrupt:
         print("Saliendo...")
     finally:

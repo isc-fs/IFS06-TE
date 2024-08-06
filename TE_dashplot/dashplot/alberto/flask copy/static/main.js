@@ -581,71 +581,102 @@ var chart19 = new Chart(ctx19, {
 
 socket.on('newdata', function(data) {
     if (data.dataid == 0x610) { // IMU REAR
-        console.log(data);
-        chart9.data.datasets[0].data.push({x: Date.now(), y: data.ax});
-        chart9.data.datasets[1].data.push({x: Date.now(), y: data.ay});
-        chart9.data.datasets[2].data.push({x: Date.now(), y: data.az});
-        chart10.data.datasets[0].data.push({x: Date.now(), y: data.GyroX});
-        chart10.data.datasets[1].data.push({x: Date.now(), y: data.GyroY});
-        chart10.data.datasets[2].data.push({x: Date.now(), y: data.GyroZ});
-        chart9.update();
-        chart10.update();
+        if (chart9.data.datasets[0] && chart9.data.datasets[1] && chart9.data.datasets[2]) {
+            chart9.data.datasets[0].data.push({x: Date.now(), y: data.ax});
+            chart9.data.datasets[1].data.push({x: Date.now(), y: data.ay});
+            chart9.data.datasets[2].data.push({x: Date.now(), y: data.az});
+            chart9.update();
+        }
+        if (chart10.data.datasets[0] && chart10.data.datasets[1] && chart10.data.datasets[2]) {
+            chart10.data.datasets[0].data.push({x: Date.now(), y: data.GyroX});
+            chart10.data.datasets[1].data.push({x: Date.now(), y: data.GyroY});
+            chart10.data.datasets[2].data.push({x: Date.now(), y: data.GyroZ});
+            chart10.update();
+        }
     } else if (data.dataid == 0x600) { // MOTOR INVERSOR
-        console.log(data);
-        chart3.data.datasets[0].data.push({x: Date.now(), y: data.dc_bus_voltage});
-        chart4.data.datasets[0].data.push({x: Date.now(), y: data.i_actual});
-        chart5.data.datasets[0].data.push({x: Date.now(), y: data.igbt_temp});
-        chart6.data.datasets[0].data.push({x: Date.now(), y: data.inverter_temp});
-        chart7.data.datasets[0].data.push({x: Date.now(), y: data.motor_temp});
-        chart8.data.datasets[0].data.push({x: Date.now(), y: data.n_actual});
-        chart3.update();
-        chart4.update();
-        chart5.update();
-        chart6.update();
-        chart7.update();      
+        if (chart3.data.datasets[0]) {
+            chart3.data.datasets[0].data.push({x: Date.now(), y: data.dc_bus_voltage});
+            chart3.update();
+        }
+        if (chart4.data.datasets[0]) {
+            chart4.data.datasets[0].data.push({x: Date.now(), y: data.i_actual});
+            chart4.update();
+        }
+        if (chart5.data.datasets[0]) {
+            chart5.data.datasets[0].data.push({x: Date.now(), y: data.igbt_temp});
+            chart5.update();
+        }
+        if (chart6.data.datasets[0]) {
+            chart6.data.datasets[0].data.push({x: Date.now(), y: data.inverter_temp});
+            chart6.update();
+        }
+        if (chart7.data.datasets[0]) {
+            chart7.data.datasets[0].data.push({x: Date.now(), y: data.motor_temp});
+            chart7.update();
+        }
+        if (chart8.data.datasets[0]) {
+            chart8.data.datasets[0].data.push({x: Date.now(), y: data.n_actual});
+            chart8.update();
+        }
     } else if (data.dataid == 0x630) { // PEDALS
-        console.log(data);
-        chart1.data.datasets[0].data.push({x: Date.now(), y: data.throttle});
-        chart1.data.datasets[1].data.push({x: Date.now(), y: data.brake});
-        chart1.update();
+        if (chart1.data.datasets[0] && chart1.data.datasets[1]) {
+            chart1.data.datasets[0].data.push({x: Date.now(), y: data.throttle});
+            chart1.data.datasets[1].data.push({x: Date.now(), y: data.brake});
+            chart1.update();
+        }
     } else if (data.dataid == 0x640) { // ACCUMULADOR
-        console.log(data);
-        chart14.data.datasets[0].data.push({x: Date.now(), y: data.cell_min_v});
-        chart14.data.datasets[1].data.push({x: Date.now(), y: data.cell_max_temp});
-        chart15.data.datasets[0].data.push({x: Date.now(), y: data.current_sensor});
-        chart15.update();
-        chart14.update();     
-    } else if (data.dataid == 0x650) { // GPS 
-        console.log(data);
-        chart11.data.datasets[0].data.push({x: Date.now(), y: data.speed});
-        chart12.data.datasets[0].data.push({x: Date.now(), y: data.lat});
-        chart12.data.datasets[1].data.push({x: Date.now(), y: data.long});
-        chart12.data.datasets[2].data.push({x: Date.now(), y: data.alt});
-        chart12.update();
-        chart11.update();
+        if (chart14.data.datasets[0] && chart14.data.datasets[1]) {
+            chart14.data.datasets[0].data.push({x: Date.now(), y: data.cell_min_v});
+            chart14.data.datasets[1].data.push({x: Date.now(), y: data.cell_max_temp});
+            chart14.update();
+        }
+        if (chart15.data.datasets[0]) {
+            chart15.data.datasets[0].data.push({x: Date.now(), y: data.current_sensor});
+            chart15.update();
+        }
+    } else if (data.dataid == 0x650) { // GPS
+        if (chart11.data.datasets[0]) {
+            chart11.data.datasets[0].data.push({x: Date.now(), y: data.speed});
+            chart11.update();
+        }
+        if (chart12.data.datasets[0] && chart12.data.datasets[1] && chart12.data.datasets[2]) {
+            chart12.data.datasets[0].data.push({x: Date.now(), y: data.lat});
+            chart12.data.datasets[1].data.push({x: Date.now(), y: data.long});
+            chart12.data.datasets[2].data.push({x: Date.now(), y: data.alt});
+            chart12.update();
+        }
     } else if (data.dataid == 0x670) { // SUSPENSION
-        console.log(data);
-        chart13.data.datasets[0].data.push({x: Date.now(), y: data.FR});
-        chart13.data.datasets[1].data.push({x: Date.now(), y: data.FL});
-        chart13.data.datasets[2].data.push({x: Date.now(), y: data.RR});
-        chart13.data.datasets[3].data.push({x: Date.now(), y: data.RL});
-        chart13.update();
+        if (chart13.data.datasets[0] && chart13.data.datasets[1] && chart13.data.datasets[2] && chart13.data.datasets[3]) {
+            chart13.data.datasets[0].data.push({x: Date.now(), y: data.FR});
+            chart13.data.datasets[1].data.push({x: Date.now(), y: data.FL});
+            chart13.data.datasets[2].data.push({x: Date.now(), y: data.RR});
+            chart13.data.datasets[3].data.push({x: Date.now(), y: data.RL});
+            chart13.update();
+        }
     } else if (data.dataid == 0x660) { // INVERTER & MOTOR
-        console.log(data);
-        chart16.data.datasets[0].data.push({x: Date.now(), y: data.inverter_in});
-        chart17.data.datasets[0].data.push({x: Date.now(), y: data.inverter_out});
-        chart18.data.datasets[0].data.push({x: Date.now(), y: data.motor_in});
-        chart19.data.datasets[0].data.push({x: Date.now(), y: data.motor_out});
-        chart16.update();
-        chart17.update();
-        chart18.update();
-        chart19.update();
+        if (chart16.data.datasets[0]) {
+            chart16.data.datasets[0].data.push({x: Date.now(), y: data.inverter_in});
+            chart16.update();
+        }
+        if (chart17.data.datasets[0]) {
+            chart17.data.datasets[0].data.push({x: Date.now(), y: data.inverter_out});
+            chart17.update();
+        }
+        if (chart18.data.datasets[0]) {
+            chart18.data.datasets[0].data.push({x: Date.now(), y: data.motor_in});
+            chart18.update();
+        }
+        if (chart19.data.datasets[0]) {
+            chart19.data.datasets[0].data.push({x: Date.now(), y: data.motor_out});
+            chart19.update();
+        }
     } else if (data.dataid == 0x680) { // TEMP FRENOS
-        console.log(data);
-        chart2.data.datasets[0].data.push({x: Date.now(), y: data.TFR});
-        chart2.data.datasets[1].data.push({x: Date.now(), y: data.TFL});
-        chart2.data.datasets[2].data.push({x: Date.now(), y: data.TRR});
-        chart2.data.datasets[3].data.push({x: Date.now(), y: data.TRL});
-        chart2.update();
+        if (chart2.data.datasets[0] && chart2.data.datasets[1] && chart2.data.datasets[2] && chart2.data.datasets[3]) {
+            chart2.data.datasets[0].data.push({x: Date.now(), y: data.TFR});
+            chart2.data.datasets[1].data.push({x: Date.now(), y: data.TFL});
+            chart2.data.datasets[2].data.push({x: Date.now(), y: data.TRR});
+            chart2.data.datasets[3].data.push({x: Date.now(), y: data.TRL});
+            chart2.update();
+        }
     }
 });
